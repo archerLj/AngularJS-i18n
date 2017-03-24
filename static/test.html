@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../angular/angular/angular.js"></script>
+    <script src="../angular/angular-translate/angular-translate.js"></script>
+    <script src="../angular/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+</head>
+
+<body ng-app="myApp">
+<div ng-controller="testCtr">
+<select class="language-switching" ng-model="cur_lang" ng-change="switching(cur_lang)">
+    <option value="en">English</option>
+    <option value="cn">简体中文</option>
+</select>
+<br/>
+<span>测试：<span ng-bind="title"></span></span>
+</div>
+
+
+<script>
+    var app = angular.module('myApp', ['pascalprecht.translate'])
+            .config(['$translateProvider',function($translateProvider){
+
+                $translateProvider.useStaticFilesLoader({
+                    prefix: '../i18n/',
+                    suffix: '.json'
+                });
+
+            }]).controller('testCtr',['$scope', '$translate', function($scope, $translate){
+                var lang = window.localStorage.lang||'cn';
+                $translate.use(lang).then(function() {
+                    $scope.title = $translate.instant('title');
+                });
+
+                $scope.switching = function(langKey){
+                    $translate.use(langKey).then(function() {
+                        $scope.title = $translate.instant('title');
+                    });
+                }
+            }]);
+</script>
+
+</body>
+</html>
